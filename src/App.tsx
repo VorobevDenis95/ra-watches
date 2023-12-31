@@ -1,20 +1,21 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import Form from './components/Form'
+import { PropsWatch } from './components/Watch'
+import ListWatches from './components/ListWatches'
+import uniqid from 'uniqid';
+
 
 function App() {
-
-  const list = [];
-
-  const [value, SetValue] = useState({
+  const [list, setList] = useState<Array<PropsWatch>>([]);
+  const [value, setValue] = useState({
     nameClock: '',
     timeZone: '',
+    id: uniqid(),
   })
 
   const onchangeNameClock = (e:React.InputHTMLAttributes<HTMLInputElement>) => {
-    SetValue(prevState => {
+    setValue(prevState => {
         return{
           ...prevState,
           nameClock: e.target.value,
@@ -23,7 +24,7 @@ function App() {
   }
 
   const onchangeTimeZone = (e:React.InputHTMLAttributes<HTMLInputElement>) => {
-    SetValue(prevState => {
+    setValue(prevState => {
         return{
           ...prevState,
           timeZone: e.target.value,
@@ -32,11 +33,12 @@ function App() {
   }
 
   const clearForm = () => {
-    SetValue(prevState => {
+    setValue(prevState => {
       return {
         ...prevState, 
         nameClock: '',
         timeZone: '',
+        id: uniqid(), 
       }
     }
       )
@@ -44,14 +46,27 @@ function App() {
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    list.push(value);
-    console.log(value);
+    setList(prevState => {
+      return [
+        ...prevState, 
+        value,
+      ]
+    })
     clearForm();
   }
 
+  const handleDeleteItem = (id: string) :void=> {
+    console.log(id);
+    setList((prevState) => {
+      return prevState.filter((list: { id: string }) => list.id !== id)
+    })
+  }
 
   return (
-    <Form onSubmit={onSubmit} value={value} onchangeNameClock={onchangeNameClock} onchangeTimeZone={onchangeTimeZone}/>
+    <div className="container">
+      <Form onSubmit={onSubmit} value={value} onchangeNameClock={onchangeNameClock} onchangeTimeZone={onchangeTimeZone}/>
+      <ListWatches list={list} onClickDelete={handleDeleteItem}/>
+    </div>    
   )
 }
 
