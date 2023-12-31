@@ -18,9 +18,9 @@ const Watch = ({nameClock, timeZone, id, onClickDelete}: PropsWatch) => {
   );
 
   const tick = () => {
-    console.log(1);
     const date = new Date();
     let hr = date.getUTCHours() + Number(timeZone);
+    console.log(hr)
     while (hr > 23) hr = hr-24;
     const min = date.getMinutes().toString().padStart(2, '0');
     const sec = date.getSeconds().toString().padStart(2, '0');
